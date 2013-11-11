@@ -1,0 +1,3 @@
+[submodule "javascript/library"]
+	path = javascript/library
+	url = git://github.com/volkovasystems/library.git
