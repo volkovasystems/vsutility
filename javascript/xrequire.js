@@ -60,6 +60,10 @@ exports.boot = function boot( ){
 		throw new Error( "dependency not loaded" );
 	}
 
+	if( !( "xrequire" in global ) ){
+		return;
+	}
+
 	global.xrequire = function xrequire( namespace, dependencies ){
 		if( !fs.statSync( namespace ).isFile( )
 			&& !( namespace in sharedDependencies ) )
