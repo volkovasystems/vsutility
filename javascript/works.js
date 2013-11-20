@@ -1,20 +1,20 @@
-var chore = require( "./chore.js" );
+var work = require( "./work.js" );
 var async = require( "async" );
 var _ = require( "underscore" );
 
 /*
 	This is the multi modularize command execution processing of chore.
 	Basically it breaks down the command using any command separator
-		then executes each command through the chore function.
-	The errors are preserved. It means it will execute other chores
-		if previous chores has errors.
-	If you don't want this procedure you may opt to use the chore method only.
+		then executes each command through the work function.
+	The errors are preserved. It means it will execute other works
+		if previous works has errors.
+	If you don't want this procedure you may opt to use the work method only.
 */
 //Don't insert again.
-if( "chores" in global ){
+if( "works" in global ){
 	return;
 }
-global.chores = function chores( command, callback ){
+global.works = function works( command, callback ){
 	//For now we will support && and ;
 	//TODO: Support other separators
 	var commands = command.split( /\s*&&\s*|\s*;\s*/ );
@@ -22,8 +22,8 @@ global.chores = function chores( command, callback ){
 	async.map( commands,
 		function( command, callback ){
 			callback( null, function( callback ){
-				chore( command,
-					function( error, state ){
+				work( command,
+					function( error, state, output ){
 						if( error ){
 							errorList.push( {
 								"error": error,
@@ -31,23 +31,23 @@ global.chores = function chores( command, callback ){
 							} );
 							state = false;
 						}
-						callback( null, state );
+						callback( null, state, output );
 					} );
 			} );
 		},
-		function( error, choreList ){
+		function( error, workList ){
 			if( error ){
 				callback( error );
 				return;
 			}
-			async.series( choreList,
+			async.series( workList,
 				function( error, result ){
 					if( error ){
 						callback( error );
 						return;
 					}
 					
-					if( _.compact( result ).length == choreList.length ){
+					if( _.compact( result ).length == workList.length ){
 						callback( null, true );
 					}else{
 						callback( new Error( JSON.stringify( errorList ) ) );
