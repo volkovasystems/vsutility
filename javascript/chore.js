@@ -7,6 +7,10 @@ var childprocess = require( "child_process" );
 		2. return on error
 		3. do not listen to output stream
 */
+//Don't insert again.
+if( "chore" in global ){
+	return;
+}
 global.chore = function chore( command, callback ){
 	var task = childprocess.exec( command );
 	var error = "";
