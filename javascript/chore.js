@@ -6,6 +6,9 @@ var childprocess = require( "child_process" );
 		1. execute command
 		2. return on error
 		3. do not listen to output stream
+
+	This is a global function and I hope that the word "chore",
+		will not be used anywhere in the vscode environment.
 */
 global.chore = function chore( command, callback ){
 	var task = childprocess.exec( command );
