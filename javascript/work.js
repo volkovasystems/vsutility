@@ -1,22 +1,24 @@
 var childprocess = require( "child_process" );
 
 /*
-	This chore function is a simple command execution engine
+	This work function is a simple command execution engine
 		with the following features:
 		1. execute command
 		2. return on error
-		3. do not listen to output stream
-
-	This is a global function and I hope that the word "chore",
-		will not be used anywhere in the vscode environment.
+		3. listen to output stream
 */
 //Don't insert again.
-if( "chore" in global ){
+if( "work" in global ){
 	return;
 }
-global.chore = function chore( command, callback ){
+global.work = function work( command, callback ){
 	var task = childprocess.exec( command );
 	var error = "";
+	var output = "";
+	task.stdout.on( "data",
+		function( data ){
+			output += data.toString( );
+		} );
 	task.stderr.on( "data",
 		function( data ){
 			error += data.toString( );
@@ -27,7 +29,7 @@ global.chore = function chore( command, callback ){
 				error = new Error( error );
 				callback( error );
 			}else{
-				callback( null, true );
+				callback( null, true, output );
 			}
 		} );
 };
