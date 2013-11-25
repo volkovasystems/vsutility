@@ -64,16 +64,48 @@ exports.boot = function boot( ){
 		return;
 	}
 
+	/*
+		xrequire can load javascript files different from
+			a traditional nodejs module file.
+
+		xrequire is built with modularization in mind and such the following
+			strict rules should be followed:
+			1. No var keyword outside.
+			2. Variables should contain a value.
+			3. Preferably, variables should contain functions.
+			4. Dependencies should be explicitly loaded outside and
+				should be assumed that it is global inside.
+
+		xrequire loaded javascripts exhibits the following behaviors:
+			1. Variables inside functions without var leaks to other functions.
+			2. State persists outside locally executed environment.
+
+		Example:
+			myVariable = function myVariable( ){
+				//Statements here.
+			};
+
+		When accessing you can do this:
+			loadedModule.myVariable( );
+	*/
 	global.xrequire = function xrequire( namespace, dependencies ){
+		var name = "";
+		if( ( /[-\w]+\.js$/ ).test( namespace ) ){
+			name = namespace.match( /[-\w]+\.js$/ );
+		}else if( ( /[-\w]+$/ ).test( namespace ) ){
+			name = namespace.match( /[-\w]+\.js$/ );
+		}
+
 		if( !fs.statSync( namespace ).isFile( )
-			&& !( namespace in sharedDependencies ) )
+			|| !( name in sharedDependencies ) )
 		{
 			throw new Error( "invalid file namespace" );
 		}
 
 		//We are doing this because we want to say that this file as a namespace can be
 		//	a general namespace reference that can be used by other modules.
-		if( namespace in sharedDependencies ){
+		
+		if( !( name in sharedDependencies ) ){
 			namespace = sharedDependencies[ namespace ];
 		}
 
