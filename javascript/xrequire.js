@@ -89,11 +89,17 @@ exports.boot = function boot( ){
 			loadedModule.myVariable( );
 	*/
 	global.xrequire = function xrequire( namespace, dependencies ){
+		/*
+			A namespace may be a filepath so we have to remove other
+				string tokens and focus on the filename.
+			We will assume that the filename of the module is the same
+				with the namespace of the module.
+		*/
 		var name = "";
 		if( ( /[-\w]+\.js$/ ).test( namespace ) ){
 			name = namespace.match( /[-\w]+\.js$/ );
 		}else if( ( /[-\w]+$/ ).test( namespace ) ){
-			name = namespace.match( /[-\w]+\.js$/ );
+			name = namespace.match( /[-\w]+$/ );
 		}
 
 		if( !fs.statSync( namespace ).isFile( )
@@ -102,11 +108,12 @@ exports.boot = function boot( ){
 			throw new Error( "invalid file namespace" );
 		}
 
-		//We are doing this because we want to say that this file as a namespace can be
-		//	a general namespace reference that can be used by other modules.
-		
+		/*
+			We are doing this because we want to say that this file as a namespace can be
+				a general namespace reference that can be used by other modules.
+		*/
 		if( !( name in sharedDependencies ) ){
-			namespace = sharedDependencies[ namespace ];
+			namespace = sharedDependencies[ name ];
 		}
 
 		var context= { };
