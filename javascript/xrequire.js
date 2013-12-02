@@ -4,6 +4,8 @@ var fs = require( "fs" );
 var sharedDependencies = { };
 var sharedEnvironment = { };
 var dependencyLoaded = false;
+var filePattern = /[-\w]+\.js$/;
+var otherFilePattern = /[-\w]+$/;
 
 /*
 	This should be called before boot.
@@ -96,14 +98,14 @@ exports.boot = function boot( ){
 				with the namespace of the module.
 		*/
 		var name = "";
-		if( ( /[-\w]+\.js$/ ).test( namespace ) ){
-			name = namespace.match( /[-\w]+\.js$/ );
-		}else if( ( /[-\w]+$/ ).test( namespace ) ){
-			name = namespace.match( /[-\w]+$/ );
+		if( filePattern.test( namespace ) ){
+			name = namespace.match( filePattern );
+		}else if( otherFilePattern.test( namespace ) ){
+			name = namespace.match( otherFilePattern );
 		}
 
 		if( !fs.statSync( namespace ).isFile( )
-			|| !( name in sharedDependencies ) )
+			&& !( name in sharedDependencies ) )
 		{
 			throw new Error( "invalid file namespace" );
 		}
@@ -113,7 +115,11 @@ exports.boot = function boot( ){
 				a general namespace reference that can be used by other modules.
 		*/
 		if( !( name in sharedDependencies ) ){
-			namespace = sharedDependencies[ name ];
+			sharedDependencies[ name ] = namespace;
+		}else if( sharedDependencies[ name ] !== namespace ){
+			//The path is different that makes it more complicated.
+			//TODO: Should we throw an error here?
+			throw new Error( "conflicting namespace" );
 		}
 
 		var context= { };
@@ -124,9 +130,23 @@ exports.boot = function boot( ){
 		}
 
 		//Set the dependencies.
+		var dependencyName = "";
 		for( var index in dependencies ){
 			var dependency = dependencies[ index ];
-			context[ dependency ] = sharedDependencies[ dependency ];
+			if( dependency in sharedDependencies ){
+				dependency = sharedDependencies[ dependency ];
+			}
+			//If dependency is a file we cannot look inside sharedDependencies.
+			if( fs.existsSync( dependency ) ){
+				if( filePattern.test( dependency ) ){
+					dependencyName = dependency.match( filePattern );
+				}else if( otherFilePattern.test( namespace ) ){
+					dependencyName = dependency.match( otherFilePattern );
+				}
+				context[ dependencyName ] = require( dependency );
+			}
+			//If the dependency is either present or not in the shared dependency list.
+			context[ dependency ] = sharedDependencies[ dependency ] || dependency;
 		}
 
 		context = vm.createContext( context );
