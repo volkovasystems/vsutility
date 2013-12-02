@@ -133,6 +133,7 @@ exports.boot = function boot( ){
 		var dependencyName = "";
 		for( var index in dependencies ){
 			var dependency = dependencies[ index ];
+			//If dependency is inside the sharedDependencies it is a file path.
 			if( dependency in sharedDependencies ){
 				dependency = sharedDependencies[ dependency ];
 			}
@@ -144,9 +145,10 @@ exports.boot = function boot( ){
 					dependencyName = dependency.match( otherFilePattern );
 				}
 				context[ dependencyName ] = require( dependency );
+				continue;
 			}
 			//If the dependency is either present or not in the shared dependency list.
-			context[ dependency ] = sharedDependencies[ dependency ] || dependency;
+			context[ dependency ] = require( dependency );
 		}
 
 		context = vm.createContext( context );
