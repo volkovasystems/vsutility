@@ -47,7 +47,13 @@ exports.loadDependencyConfiguration = function loadDependencyConfiguration( conf
 exports.injectDependency = function injectDependency( namespace, filePath ){
 	if( fs.statSync( filePath ).isFile( ) ){
 		if( namespace in sharedDependencies ){
-			console.log( "warning:" + namespace + " with file path " + filePath + " namespace already exists" );
+			var data = JSON.stringify( {
+				"namespace": namespace,
+				"filePath": filePath,
+				"date": Date.now( )
+			} );
+			data = encodify( data );
+			console.log( "warning:namespace already exists[" + data + "]" );
 		}
 		sharedDependencies[ namespace ] = filePath;	
 	}
@@ -59,7 +65,12 @@ exports.injectDependency = function injectDependency( namespace, filePath ){
 exports.injectEnvironment = function injectEnvironment( environment ){
 	for( var key in environment ){
 		if( key in sharedEnvironment ){
-			console.log( "warning:" + key + " module already exists" );
+			var data = JSON.stringify( {
+				"module": key,
+				"date": Date.now( )
+			} );
+			data = encodify( data );
+			console.log( "warning:module already exists[" + data + "]" );
 		}
 		sharedEnvironment[ key ] = environment[ key ];	
 	}
@@ -123,7 +134,8 @@ exports.boot = function boot( ){
 				"namespace": namespace,
 				"name": name
 			} );
-			throw new Error( "invalid file namespace" );
+			data = encodify( data );
+			throw new Error( "invalid file namespace[" + data + "]" );
 		}
 
 		/*
@@ -135,7 +147,12 @@ exports.boot = function boot( ){
 		}else if( sharedDependencies[ name ] !== namespace ){
 			//The path is different that makes it more complicated.
 			//TODO: Should we throw an error here?
-			throw new Error( "conflicting namespace" );
+			var data = JSON.stringify( {
+				"namespace": namespace,
+				"sharedDependencies": sharedDependencies
+			} );
+			data = encodify( data );
+			throw new Error( "conflicting namespace[" + data + "]" );
 		}
 
 		var context= { };
@@ -161,6 +178,7 @@ exports.boot = function boot( ){
 					dependencyName = dependency.match( otherFilePattern );
 				}
 				context[ dependencyName ] = require( dependency );
+				//I hope this continue works!
 				continue;
 			}
 			//If the dependency is either present or not in the shared dependency list.
