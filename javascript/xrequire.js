@@ -11,6 +11,12 @@ var otherFilePattern = /[-\w]+$/;
 	This should be called before boot.
 	This will prepare the necessary dependencies, populate the require cache,
 		and made it available to all modules.
+
+	The difference here with the shared environment is that
+		the dependency can only be applied if needed.
+		This function will just cache it. Shared environment,
+		on the other hand, is loaded explicitly from the moment
+		on and succeeding requires will adapt the current shared environment.
 */
 exports.loadDependencyConfiguration = function loadDependencyConfiguration( configuration ){
 	var dependency = "";
@@ -40,6 +46,9 @@ exports.loadDependencyConfiguration = function loadDependencyConfiguration( conf
 */
 exports.injectDependency = function injectDependency( namespace, filePath ){
 	if( fs.statSync( filePath ).isFile( ) ){
+		if( namespace in sharedDependencies ){
+			console.log( "warning:" + namespace + " with file path " + filePath + " namespace already exists" );
+		}
 		sharedDependencies[ namespace ] = filePath;	
 	}
 };
@@ -49,6 +58,9 @@ exports.injectDependency = function injectDependency( namespace, filePath ){
 */
 exports.injectEnvironment = function injectEnvironment( environment ){
 	for( var key in environment ){
+		if( key in sharedEnvironment ){
+			console.log( "warning:" + key + " module already exists" );
+		}
 		sharedEnvironment[ key ] = environment[ key ];	
 	}
 };
@@ -59,7 +71,7 @@ exports.injectEnvironment = function injectEnvironment( environment ){
 */
 exports.boot = function boot( ){
 	if( !dependencyLoaded ){
-		throw new Error( "dependency not loaded" );
+		throw new Error( "dependency configuration not loaded" );
 	}
 
 	if( !( "xrequire" in global ) ){
@@ -107,6 +119,10 @@ exports.boot = function boot( ){
 		if( !fs.statSync( namespace ).isFile( )
 			&& !( name in sharedDependencies ) )
 		{
+			var data = JSON.stringify( {
+				"namespace": namespace,
+				"name": name
+			} );
 			throw new Error( "invalid file namespace" );
 		}
 
