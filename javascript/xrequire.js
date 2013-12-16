@@ -85,7 +85,7 @@ exports.boot = function boot( ){
 		throw new Error( "dependency configuration not loaded" );
 	}
 
-	if( !( "xrequire" in global ) ){
+	if( "xrequire" in global ){
 		return;
 	}
 

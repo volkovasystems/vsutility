@@ -3,7 +3,7 @@ var async = require( "async" );
 var _ = require( "underscore" );
 
 /*
-	This is the multi modularize command execution processing of chore.
+	This is the multi modularize command execution processing of work.
 	Basically it breaks down the command using any command separator
 		then executes each command through the work function.
 	The errors are preserved. It means it will execute other works
