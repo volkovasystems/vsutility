@@ -1,7 +1,10 @@
+/*:
+*/
 exports.boot = function boot( ){
 	if( "encodify" in global ){
 		return;
 	}
+	
 	global.encodify = function encodify( entity ){
 		if( typeof entity != "string" ){
 			entity = entity.toString( );

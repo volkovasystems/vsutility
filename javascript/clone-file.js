@@ -128,10 +128,6 @@ var completeDestination = function completeDestination( destination, callback ){
 };
 exports.completeDestination = completeDestination;
 
-exports.createSynclet = function createSynclet( ){
-
-};
-
 exports.copyFile = function copyFile( ){
 	if( osType.isWindows( ) ){
 		chore( "copy " + source + " " + destination );
@@ -140,10 +136,13 @@ exports.copyFile = function copyFile( ){
 	}
 };
 
-exports.watchFile = function watchFile( ){
+exports.createSynclet = function createSynclet( ){
 
 };
 
+exports.watchFile = function watchFile( ){
+
+};
 
 exports.boot = function boot( ){
 
