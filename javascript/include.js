@@ -13,6 +13,13 @@
 	
 */
 
+/*
+	A brief concept on OCIS Command Format
+*/
+exports.parseBootCommands = function parseBootCommands( ){
+
+};
+
 exports.boot = function boot( ){
 
 };
