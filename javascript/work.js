@@ -15,6 +15,7 @@ exports.boot = function boot( ){
 		return;
 	}
 	
+	global.contaminated = true;
 	global.work = function work( command, callback ){
 		var task = childprocess.exec( command );
 		var error = "";
@@ -38,3 +39,5 @@ exports.boot = function boot( ){
 			} );
 	};
 };
+
+exports.module = module;

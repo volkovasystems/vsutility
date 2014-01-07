@@ -9,6 +9,7 @@ exports.boot = function boot( ){
 		return;
 	}
 
+	global.contaminated = true;
 	global.osType = function osType( ){
 		var type = os.type( ).toLowerCase( );
 		var isWindows = false;
@@ -52,3 +53,5 @@ exports.boot = function boot( ){
 		};
 	};
 };
+
+exports.module = module;

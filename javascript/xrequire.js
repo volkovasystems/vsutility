@@ -5,12 +5,17 @@
 
 var vm = require( "vm" );
 var fs = require( "fs" );
+var util = require( "util" );
+
+var encodify = require( "./encodify.js" );
+var decodify = require( "./decodify.js" );
 
 var sharedDependencies = { };
 var sharedEnvironment = { };
 var dependencyLoaded = false;
 var filePattern = /[-\w]+\.js$/;
 var otherFilePattern = /[-\w]+$/;
+var uncontaminatedGlobal = { };
 
 /*
 	This should be called before boot.
@@ -22,6 +27,21 @@ var otherFilePattern = /[-\w]+$/;
 		This function will just cache it. Shared environment,
 		on the other hand, is loaded explicitly from the moment
 		on and succeeding requires will adapt the current shared environment.
+
+	The configuration contains an object with keys similar
+		to the way we require modules (the module name itself)
+		and the path or the module name as the value.
+
+	The dependency configuration is given on the very first boot of this module.
+
+	Generally we have 3 kinds of dependency,
+		1. IN-BOOT Dependency
+			This dependency is given on the boot of this module.
+		2. SHARED dependency
+			This dependency is given during the execution of the program
+			thus affects other modules that already loaded.
+		3. LOCAL Dependency
+			This dependency only affects this module.
 */
 exports.loadDependencyConfiguration = function loadDependencyConfiguration( configuration ){
 	var dependency = "";
@@ -32,6 +52,14 @@ exports.loadDependencyConfiguration = function loadDependencyConfiguration( conf
 	}
 
 	dependencyLoaded = true;
+};
+
+var loadDefaultGlobalDependencies = function loadDefaultGlobalDependencies( ){
+	if( !( "contaminated" in global ) ){
+		for( var key in global ){
+			uncontaminatedGlobal[ key ] = global[ key ];
+		}
+	}
 };
 
 /*
@@ -60,7 +88,7 @@ exports.injectDependency = function injectDependency( namespace, filePath ){
 			data = encodify( data );
 			console.log( "warning:namespace already exists[" + data + "]" );
 		}
-		sharedDependencies[ namespace ] = filePath;	
+		sharedDependencies[ namespace ] = require( filePath );	
 	}
 };
 
@@ -71,7 +99,7 @@ exports.injectEnvironment = function injectEnvironment( environment ){
 	for( var key in environment ){
 		if( key in sharedEnvironment ){
 			var data = JSON.stringify( {
-				"module": key,
+				"entity": key,
 				"date": Date.now( )
 			} );
 			data = encodify( data );
@@ -93,6 +121,8 @@ exports.boot = function boot( ){
 	if( "xrequire" in global ){
 		return;
 	}
+
+	loadDefaultGlobalDependencies( );
 
 	/*
 		xrequire can load javascript files different from
@@ -118,6 +148,7 @@ exports.boot = function boot( ){
 		When accessing you can do this:
 			loadedModule.myVariable( );
 	*/
+	global.contaminated = true;
 	global.xrequire = function xrequire( namespace, dependencies ){
 		/*
 			A namespace may be a filepath so we have to remove other
@@ -160,7 +191,16 @@ exports.boot = function boot( ){
 			throw new Error( "conflicting namespace[" + data + "]" );
 		}
 
-		var context= { };
+		var context= { 
+			"module": { },
+			"require": require,
+			"exports": { }
+		};
+
+		//Set the globals
+		for( var key in uncontaminatedGlobal ){
+			context[ key ] = uncontaminatedGlobal[ key ];
+		}
 
 		//Set the environment.
 		for( var key in sharedEnvironment ){
@@ -168,15 +208,22 @@ exports.boot = function boot( ){
 		}
 
 		//Set the dependencies.
+		/*
+			The value of the dependencies may be
+				1. a reference name
+				2. a filepath
+		*/
 		var dependencyName = "";
 		for( var index in dependencies ){
 			var dependency = dependencies[ index ];
+
 			//If dependency is inside the sharedDependencies it is a file path.
 			if( dependency in sharedDependencies ){
 				dependency = sharedDependencies[ dependency ];
 			}
-			//If dependency is a file we cannot look inside sharedDependencies.
+			
 			if( fs.existsSync( dependency ) ){
+				//If dependency is a file we cannot look inside sharedDependencies.
 				if( filePattern.test( dependency ) ){
 					dependencyName = dependency.match( filePattern );
 				}else if( otherFilePattern.test( namespace ) ){
@@ -186,6 +233,7 @@ exports.boot = function boot( ){
 				//I hope this continue works!
 				continue;
 			}
+
 			//If the dependency is either present or not in the shared dependency list.
 			context[ dependency ] = require( dependency );
 		}
@@ -194,8 +242,30 @@ exports.boot = function boot( ){
 
 		var script = fs.readFileSync( namespace, { "encoding": "utf8" } );
 
-		vm.runInContext( script, context );
+		try{
+			vm.runInContext( script, context );
+		}catch( error ){
+			console.log( error.stack );
+		}
 
-		return context;
+		var moduleBoot = context.exports.boot;
+		context.exports.boot = function boot( ){			
+			moduleBoot( );
+
+			console.log( "boot!", util.inspect( context ) );
+
+			for( var key in context.global ){
+				if( !( key in global ) ){
+					global[ key ] = context.global;
+				}
+			}
+		};
+
+		return context.exports;
 	};
 };
+
+exports.loadDependencyConfiguration( );
+exports.boot( );
+
+xrequire( "./ocf-parser.js" ).boot( );
