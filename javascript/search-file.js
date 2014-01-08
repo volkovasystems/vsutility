@@ -45,7 +45,7 @@ exports.boot = function boot( ){
 							console.log( error );
 							callback( error );
 						}else if( state ){
-							console.log( output );
+							callback( null, output );
 						}else{
 							var error = new Error( "indeterminate result" );
 							console.log( error );
@@ -53,8 +53,8 @@ exports.boot = function boot( ){
 						}
 					};
 
-					if( osType.isWindows( ) ){
-						work( "cd " + filePath + "; dir " + fileName + " /b/s", searchCallback );
+					if( osType( ).isWindows( ) ){
+						work( "cd " + filePath + " && dir " + fileName + " /b/s", searchCallback );
 					}else{
 						work( "find " + filePath + " -name '" + fileName + "'", searchCallback );
 					}
@@ -73,3 +73,9 @@ exports.boot = function boot( ){
 	exports.searchFile = searchFile;
 };
 
+exports.boot( );
+
+searchFile( "xrequire.js", "./", 3,
+	function( error, fileLocation ){
+		console.log( fileLocation );
+	} );

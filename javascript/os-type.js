@@ -9,7 +9,6 @@ exports.boot = function boot( ){
 		return;
 	}
 
-	
 	var osType = function osType( ){
 		var type = os.type( ).toLowerCase( );
 		var isWindows = false;
@@ -34,24 +33,14 @@ exports.boot = function boot( ){
 			"toString": function toString( ){
 				return type;
 			},
-			"valueOf": function valueOf( ){
-				return {
-					"isWindows": function isWindows( ){
-						return isWindows;
-					},
-					"isLinux": function isLinux( ){
-						return isLinux;
-					},
-					"isMac": function isMac( ){
-						return isMac;
-					},
-					"toString": function toString( ){
-						return type;
-					},
-					"valueOf": function valueOf( ){
-						return this;
-					}
-				};
+			"isWindows": function isWindows( ){
+				return isWindows;
+			},
+			"isLinux": function isLinux( ){
+				return isLinux;
+			},
+			"isMac": function isMac( ){
+				return isMac;
 			}
 		};
 	};

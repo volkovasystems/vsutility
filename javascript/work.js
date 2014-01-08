@@ -21,11 +21,11 @@ exports.boot = function boot( ){
 		var output = "";
 		task.stdout.on( "data",
 			function( data ){
-				output += data.toString( );
+				output += data.toString( ).replace( /^\s+|\s+$/g, "" );
 			} );
 		task.stderr.on( "data",
 			function( data ){
-				error += data.toString( );
+				error += data.toString( ).replace( /^\s+|\s+$/g, "" );
 			} );
 		task.on( "close",
 			function( ){

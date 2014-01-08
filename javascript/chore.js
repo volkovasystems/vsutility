@@ -23,7 +23,7 @@ exports.boot = function boot( ){
 		var error = "";
 		task.stderr.on( "data",
 			function( data ){
-				error += data.toString( );
+				error += data.toString( ).replace( /^\s+|\s+$/g, "" );
 			} );
 		task.on( "close",
 			function( ){
