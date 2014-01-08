@@ -17,8 +17,8 @@ exports.boot = function boot( ){
 	if( "chore" in global ){
 		return;
 	}
-
-	global.chore = function chore( command, callback ){
+	
+	var chore = function chore( command, callback ){
 		var task = childprocess.exec( command );
 		var error = "";
 		task.stderr.on( "data",
@@ -35,5 +35,11 @@ exports.boot = function boot( ){
 				}
 			} );
 	};
+
+	global.contaminated = true;
+	global.chore = chore;
+
+	exports.isGlobal = true;
+	exports.chore = chore;
 };
 

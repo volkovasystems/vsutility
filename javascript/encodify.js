@@ -5,7 +5,7 @@ exports.boot = function boot( ){
 		return;
 	}
 	
-	global.encodify = function encodify( entity ){
+	var encodify = function encodify( entity ){
 		if( typeof entity != "string" ){
 			entity = entity.toString( );
 		}
@@ -13,4 +13,10 @@ exports.boot = function boot( ){
 		var URIencoded = encodeURIComponent( base64Encoded ).toString( );
 		return URIencoded;
 	};
+
+	global.contaminated = true;
+	global.encodify = encodify;
+
+	exports.isGlobal = true;
+	exports.encodify = encodify;
 };

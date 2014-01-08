@@ -6,14 +6,15 @@
 var vm = require( "vm" );
 var fs = require( "fs" );
 var util = require( "util" );
+var S = require( "string" );
 
-var encodify = require( "./encodify.js" );
-var decodify = require( "./decodify.js" );
+require( "./encodify.js" ).boot( );
+require( "./decodify.js" ).boot( );
 
 var sharedDependencies = { };
 var sharedEnvironment = { };
 var dependencyLoaded = false;
-var filePattern = /[-\w]+\.js$/;
+var filePattern = /([-\w]+)\.js$/;
 var otherFilePattern = /[-\w]+$/;
 var uncontaminatedGlobal = { };
 
@@ -128,18 +129,6 @@ exports.boot = function boot( ){
 		xrequire can load javascript files different from
 			a traditional nodejs module file.
 
-		xrequire is built with modularization in mind and such the following
-			strict rules should be followed:
-			1. No var keyword outside.
-			2. Variables should contain a value.
-			3. Preferably, variables should contain functions.
-			4. Dependencies should be explicitly loaded outside and
-				should be assumed that it is global inside.
-
-		xrequire loaded javascripts exhibits the following behaviors:
-			1. Variables inside functions without var leaks to other functions.
-			2. State persists outside locally executed environment.
-
 		Example:
 			myVariable = function myVariable( ){
 				//Statements here.
@@ -148,8 +137,8 @@ exports.boot = function boot( ){
 		When accessing you can do this:
 			loadedModule.myVariable( );
 	*/
-	global.contaminated = true;
-	global.xrequire = function xrequire( namespace, dependencies ){
+	
+	var xrequire = function xrequire( namespace, dependencies ){
 		/*
 			A namespace may be a filepath so we have to remove other
 				string tokens and focus on the filename.
@@ -158,7 +147,7 @@ exports.boot = function boot( ){
 		*/
 		var name = "";
 		if( filePattern.test( namespace ) ){
-			name = namespace.match( filePattern );
+			name = namespace.match( filePattern )[ 1 ];
 		}else if( otherFilePattern.test( namespace ) ){
 			name = namespace.match( otherFilePattern );
 		}
@@ -191,8 +180,7 @@ exports.boot = function boot( ){
 			throw new Error( "conflicting namespace[" + data + "]" );
 		}
 
-		var context= { 
-			"module": { },
+		var context= {
 			"require": require,
 			"exports": { }
 		};
@@ -225,7 +213,7 @@ exports.boot = function boot( ){
 			if( fs.existsSync( dependency ) ){
 				//If dependency is a file we cannot look inside sharedDependencies.
 				if( filePattern.test( dependency ) ){
-					dependencyName = dependency.match( filePattern );
+					dependencyName = dependency.match( filePattern )[ 1 ];
 				}else if( otherFilePattern.test( namespace ) ){
 					dependencyName = dependency.match( otherFilePattern );
 				}
@@ -258,18 +246,19 @@ exports.boot = function boot( ){
 		context.exports.boot = function boot( ){			
 			moduleBoot( );
 
-			for( var key in context.global ){
-				if( !( key in global ) ){
-					global[ key ] = context.global;
-				}
+			var moduleName = S( name ).camelize( ).toString( );
+
+			if( !( moduleName in global ) ){
+				global[ moduleName ] = context.exports[ moduleName ];
 			}
 		};
 
 		return context.exports;
 	};
+
+	global.contaminated = true;
+	global.xrequire = xrequire;
+
+	exports.isGlobal = true;
+	exports.xrequire = xrequire;
 };
-
-exports.loadDependencyConfiguration( );
-exports.boot( );
-
-xrequire( "./ocf-parser.js" ).boot( );

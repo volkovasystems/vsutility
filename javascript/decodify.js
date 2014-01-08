@@ -6,8 +6,7 @@ exports.boot = function boot( ){
 		return;
 	}
 
-	global.contaminated = true;
-	global.decodify = function decodify( entity ){
+	var decodify = function decodify( entity ){
 		if( typeof entity != "string" ){
 			entity = entity.toString( );
 		}
@@ -16,6 +15,10 @@ exports.boot = function boot( ){
 		var base64Decoded = ( new Buffer( URIdecoded ), "base64" ).toString( "utf8" );
 		return base64Decoded;
 	};
-};
 
-exports.module = module;
+	global.contaminated = true;
+	global.decodify = decodify;
+
+	exports.isGlobal = true;
+	exports.decodify = decodify;
+};

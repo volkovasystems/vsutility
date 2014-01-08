@@ -7,10 +7,10 @@
 		}
 	@end-require
 */
-//console.log( "Step 1", require.paths );
+
 var fs = require( "fs" );
 var _ = require( "underscore" );
-//console.log( "Step 2" );
+
 var commandFormat = /^(?:(?:\/\*|\/\/)\:\s*@((?!end)[a-z][a-z0-9]+(?:-[a-z][a-z0-9]+)*):\s*((?:.|[^\b])+?)\s*(?:@end-(?:\1|[a-z][a-z0-9]+(?:-[a-z][a-z0-9]+)*|command))\s*(?:\*\/))/;
 
 var parseCommands = function parseCommands( fileContents, callback ){
@@ -43,8 +43,18 @@ exports.boot = function boot( ){
 		File data containing /*: or //: at the beginning signals a file content.
 			else it should be tested if it is a file path.
 	*/
-	global.contaminated = true;
-	global.ocfParser = function ocfParser( fileData, callback ){
+	
+	var ocfParser = function ocfParser( fileData, callback ){
+		if( !fileData ){
+			var error = new Error( "invalid file data" );
+			callback( error );
+			return;
+		}
+
+		if( !callback ){
+			callback = function callback( ){ };
+		}
+
 		fs.stat( fileData,
 			function( error, fileStatistic ){
 				var fileContents = "";
@@ -96,6 +106,10 @@ exports.boot = function boot( ){
 				}
 			} );
 	};
-};
 
-exports.module = module;
+	global.contaminated = true;
+	global.ocfParser = ocfParser;
+
+	exports.isGlobal = true;
+	exports.ocfParser = ocfParser;
+};

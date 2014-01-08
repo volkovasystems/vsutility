@@ -9,8 +9,8 @@ exports.boot = function boot( ){
 		return;
 	}
 
-	global.contaminated = true;
-	global.osType = function osType( ){
+	
+	var osType = function osType( ){
 		var type = os.type( ).toLowerCase( );
 		var isWindows = false;
 		var isLinux = false;
@@ -47,11 +47,18 @@ exports.boot = function boot( ){
 					},
 					"toString": function toString( ){
 						return type;
+					},
+					"valueOf": function valueOf( ){
+						return this;
 					}
 				};
 			}
 		};
 	};
-};
 
-exports.module = module;
+	global.contaminated = true;
+	global.osType = osType;
+
+	exports.isGlobal = true;
+	exports.osType = osType;
+};

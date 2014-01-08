@@ -22,7 +22,8 @@ exports.boot = function boot( ){
 		return;
 	}
 	
-	global.chores = function chores( command, callback ){
+	global.contaminated = true;
+	var chores = function chores( command, callback ){
 		//For now we will support && and ;
 		//TODO: Support other separators
 		var commands = command.split( /\s*&&\s*|\s*;\s*/ );
@@ -63,5 +64,7 @@ exports.boot = function boot( ){
 					} );
 			} );
 	};
+	global.chorse = chores;
+	exports.chores = chores;
 };
 

@@ -145,14 +145,19 @@ exports.watchFile = function watchFile( ){
 };
 
 exports.boot = function boot( ){
-
 	if( "cloneFile" in global ){
 		return;
 	}
 
-	global.cloneFile = function cloneFile( source, destination ){
+	var cloneFile = function cloneFile( source, destination ){
 
 
 
 	};
+
+	global.contaminated = true;
+	global.cloneFile = cloneFile;
+
+	exports.isGlobal = true
+	exports.cloneFile = cloneFile;
 };
