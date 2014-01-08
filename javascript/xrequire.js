@@ -245,14 +245,18 @@ exports.boot = function boot( ){
 		try{
 			vm.runInContext( script, context );
 		}catch( error ){
-			console.log( error.stack );
+			var data = JSON.stringify( {
+				"namespace": namespace,
+				"dependencies": dependencies,
+				"error": error.stack
+			} );
+			data = encodify( data );
+			throw new Error( "internal error[" + data + "]" );
 		}
 
 		var moduleBoot = context.exports.boot;
 		context.exports.boot = function boot( ){			
 			moduleBoot( );
-
-			console.log( "boot!", util.inspect( context ) );
 
 			for( var key in context.global ){
 				if( !( key in global ) ){
