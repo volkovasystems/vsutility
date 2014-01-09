@@ -203,7 +203,7 @@ exports.boot = function boot( ){
 
 		//Set the environment.
 		for( var key in sharedEnvironment ){
-			context[ key ] = sharedEnvironment[ key ];	
+			context[ key ] = sharedEnvironment[ key ];
 		}
 
 		//Set the dependencies.

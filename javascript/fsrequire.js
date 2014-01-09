@@ -16,11 +16,8 @@ exports.boot = function boot( ){
 		return;
 	}
 
-	var fsrequire = function fsrequire( namespace, referencePath, depth, dependencies, environment ){
-		//We will try to boot it up again.
-		require( "./xrequire.js" )
-			.loadDependencyConfiguration( )
-			.boot( );
+	var fsrequire = function fsrequire( namespace, referencePath, depth ){
+
 	}
 
 	global.contaminated = true;
