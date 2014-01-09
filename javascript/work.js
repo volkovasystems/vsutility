@@ -16,6 +16,16 @@ exports.boot = function boot( ){
 	}
 	
 	var work = function work( command, callback ){
+		if( !callback ){
+			callback = function callback( ){ };
+		}
+
+		if( !command || typeof command != "string" ){
+			var error = new Error( "invalid command" );
+			callback( error );
+			return;
+		}
+		
 		var task = childprocess.exec( command );
 		var error = "";
 		var output = "";

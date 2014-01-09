@@ -19,6 +19,16 @@ exports.boot = function boot( ){
 	}
 	
 	var chore = function chore( command, callback ){
+		if( !callback ){
+			callback = function callback( ){ };
+		}
+
+		if( !command || typeof command != "string" ){
+			var error = new Error( "invalid command" );
+			callback( error );
+			return;
+		}
+
 		var task = childprocess.exec( command );
 		var error = "";
 		task.stderr.on( "data",

@@ -11,25 +11,25 @@ exports.boot = function boot( ){
 
 	var osType = function osType( ){
 		var type = os.type( ).toLowerCase( );
-		var isWindows = false;
-		var isLinux = false;
-		var isMac = false;
+		var isWindowsFlag = false;
+		var isLinuxFlag = false;
+		var isMacFlag = false;
 		/*
 			This will be extended for other os architectures.
 		*/
 		if( ( /windows/ ).test( type ) ){
 			type = "windows";
-			isWindows = true;
+			isWindowsFlag = true;
 		}else if( ( /linux/ ).test( type ) ){
 			type = "linux";
-			isLinux = true;
+			isLinuxFlag = true;
 		}else if( ( /osx/ ).test( type ) ){
 			type = "mac";
-			isMac = true;
+			isMacFlag = true;
 		}
 		//...s
 
-		return {
+		var osTypeFactory = {
 			"toString": function toString( ){
 				return type;
 			},
@@ -43,6 +43,8 @@ exports.boot = function boot( ){
 				return isMac;
 			}
 		};
+
+		return osTypeFactory;
 	};
 
 	global.contaminated = true;

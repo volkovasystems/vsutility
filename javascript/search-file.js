@@ -78,4 +78,5 @@ exports.boot( );
 searchFile( "xrequire.js", "./", 3,
 	function( error, fileLocation ){
 		console.log( fileLocation );
+		console.log( osType.isWindows( ).toString( ) );
 	} );
