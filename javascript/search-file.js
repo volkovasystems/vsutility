@@ -1,8 +1,13 @@
 /*:
+	@require:
+		{
+			"fs": "fs"
+			"os-type": "osType",
+			"work": "work"
+		}
+	@end-require
 */
-
 var fs = require( "fs" );
-
 require( "./os-type.js" ).boot( );
 require( "./work.js" ).boot( );
 
@@ -71,12 +76,6 @@ exports.boot = function boot( ){
 
 	exports.isGlobal = true;
 	exports.searchFile = searchFile;
+
+	return exports;
 };
-
-exports.boot( );
-
-searchFile( "xrequire.js", "./", 3,
-	function( error, fileLocation ){
-		console.log( fileLocation );
-		console.log( osType.isWindows( ).toString( ) );
-	} );

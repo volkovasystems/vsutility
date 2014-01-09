@@ -8,7 +8,6 @@
 		}
 	@end-require
 */
-
 var fsrequire = require( "./fsrequire.js" );
 var xrequire = require( "./xrequire.js" );
 var ocfParser = require( "./ocf-parser.js" );

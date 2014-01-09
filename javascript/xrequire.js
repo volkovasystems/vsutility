@@ -1,13 +1,17 @@
 /*:
+	@require:
+		{
+			"vm": "vm"
+			"fs": "fs",
+			"string": "string",
+			"encodify": "encodify",
+			"decodify": "decodify"
+		}
+	@end-require
 */
-/*
-*/
-
 var vm = require( "vm" );
 var fs = require( "fs" );
-var util = require( "util" );
 var S = require( "string" );
-
 require( "./encodify.js" ).boot( );
 require( "./decodify.js" ).boot( );
 
@@ -45,14 +49,17 @@ var uncontaminatedGlobal = { };
 			This dependency only affects this module.
 */
 exports.loadDependencyConfiguration = function loadDependencyConfiguration( configuration ){
-	var dependency = "";
+	if( !dependencyLoaded ){
+		var dependency = "";
 
-	for( var key in configuration ){
-		depedency = configuration[ key ];
-		sharedDependencies[ key ] = require( dependency );
+		for( var key in configuration ){
+			depedency = configuration[ key ];
+			sharedDependencies[ key ] = require( dependency );
+		}
+
+		dependencyLoaded = true;	
 	}
-
-	dependencyLoaded = true;
+	return exports;
 };
 
 var loadDefaultGlobalDependencies = function loadDefaultGlobalDependencies( ){
@@ -91,6 +98,8 @@ exports.injectDependency = function injectDependency( namespace, filePath ){
 		}
 		sharedDependencies[ namespace ] = require( filePath );	
 	}
+
+	return exports;
 };
 
 /*
@@ -108,6 +117,8 @@ exports.injectEnvironment = function injectEnvironment( environment ){
 		}
 		sharedEnvironment[ key ] = environment[ key ];	
 	}
+
+	return exports;
 };
 
 /*
@@ -261,4 +272,6 @@ exports.boot = function boot( ){
 
 	exports.isGlobal = true;
 	exports.xrequire = xrequire;
+
+	return exports;
 };

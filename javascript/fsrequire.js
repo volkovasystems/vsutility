@@ -7,4 +7,27 @@
 			up to the 5 levels (default) outside the directory.
 		2. Check npm if it is existing there or in bower (future).
 */
-var fs = require( "fs" );
+var S = require( "string" );
+require( "./search-file.js" ).boot( );
+
+
+exports.boot = function boot( ){
+	if( "fsrequire" in global ){
+		return;
+	}
+
+	var fsrequire = function fsrequire( namespace, referencePath, depth, dependencies, environment ){
+		//We will try to boot it up again.
+		require( "./xrequire.js" )
+			.loadDependencyConfiguration( )
+			.boot( );
+	}
+
+	global.contaminated = true;
+	global.fsrequire = fsrequire;
+
+	exports.isGlobal = true;
+	exports.fsrequire = fsrequire;
+
+	return exports;
+};

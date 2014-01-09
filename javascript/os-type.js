@@ -1,6 +1,9 @@
 /*:
-*/
-/*
+	@require:
+		{
+			"os": "os"
+		}
+	@end-require
 */
 var os = require( "os" );
 
@@ -52,4 +55,6 @@ exports.boot = function boot( ){
 
 	exports.isGlobal = true;
 	exports.osType = osType;
+
+	return exports;
 };
