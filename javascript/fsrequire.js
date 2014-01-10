@@ -10,6 +10,15 @@
 var S = require( "string" );
 require( "./search-file.js" ).boot( );
 
+var customRequire = require;
+var setRequireStrategy = function setRequireStrategy( ){
+
+};
+
+exports.useExtendedRequire = function useExtendedRequire( ){
+
+
+};
 
 exports.boot = function boot( ){
 	if( "fsrequire" in global ){
