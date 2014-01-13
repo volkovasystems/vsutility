@@ -11,13 +11,21 @@ var S = require( "string" );
 require( "./search-file.js" ).boot( );
 
 var customRequire = require;
-var setRequireStrategy = function setRequireStrategy( ){
 
+exports.useExtendedRequireStrategy = function useExtendedRequireStrategy( ){
+
+	customRequire = 
+	return exports;
 };
 
-exports.useExtendedRequire = function useExtendedRequire( ){
+exports.useRequireStrategy = function useRequireStrategy( ){
+	customRequire = require;
+	return exports;
+};
 
-
+exports.useCustomRequireStrategy = function useCustomRequireStrategy( requireStrategy ){
+	
+	return exports;
 };
 
 exports.boot = function boot( ){
@@ -26,7 +34,7 @@ exports.boot = function boot( ){
 	}
 
 	var fsrequire = function fsrequire( namespace, referencePath, depth ){
-
+		
 	}
 
 	global.contaminated = true;

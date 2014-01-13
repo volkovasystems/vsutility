@@ -14,21 +14,21 @@ exports.boot = function boot( ){
 
 	var osType = function osType( ){
 		var type = os.type( ).toLowerCase( );
-		var isWindowsFlag = false;
-		var isLinuxFlag = false;
-		var isMacFlag = false;
+		var isWindows = false;
+		var isLinux = false;
+		var isMac = false;
 		/*
 			This will be extended for other os architectures.
 		*/
 		if( ( /windows/ ).test( type ) ){
 			type = "windows";
-			isWindowsFlag = true;
+			isWindows = true;
 		}else if( ( /linux/ ).test( type ) ){
 			type = "linux";
-			isLinuxFlag = true;
+			isLinux = true;
 		}else if( ( /osx/ ).test( type ) ){
 			type = "mac";
-			isMacFlag = true;
+			isMac = true;
 		}
 		//...s
 
