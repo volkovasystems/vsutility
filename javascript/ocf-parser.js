@@ -25,9 +25,9 @@ var parseCommands = function parseCommands( fileContents, callback ){
 	*/
 	var parsedCommands = _.rest( fileContents.match( commandFormat ) || [ ] );
 	if( _.isEmpty( parsedCommands ) ){
-		callback( null, null );
+		return callback( null, null );
 	}else{
-		callback( null, parsedCommands );	
+		return callback( null, parsedCommands );	
 	}
 };
 exports.parseCommands = parseCommands
