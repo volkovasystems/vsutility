@@ -69,7 +69,7 @@ exports.checkSource = function checkSource( source, callback ){
 		} );
 };
 
-exports.checkDestination = function checkDestination( destination, callback ){
+checkDestination = function checkDestination( destination, callback ){
 	fs.stat( destination,
 		function( error, fileStatistic ){
 			if( error.code == "ENOENT" ){
@@ -119,16 +119,15 @@ exports.checkDestination = function checkDestination( destination, callback ){
 		} );
 };
 
-var completeDestination = function completeDestination( destination, callback ){
+completeDestination = function completeDestination( destination, callback ){
 	if( osType.isWindows( ) ){
 		chore( "mkdir " + destination, callback );
 	}else{
 		chore( "mkdir -p" + destination, callback );
 	}
 };
-exports.completeDestination = completeDestination;
 
-exports.copyFile = function copyFile( ){
+copyFile = function copyFile( ){
 	if( osType.isWindows( ) ){
 		chore( "copy " + source + " " + destination );
 	}else{
@@ -136,28 +135,15 @@ exports.copyFile = function copyFile( ){
 	}
 };
 
-exports.createSynclet = function createSynclet( ){
+createSynclet = function createSynclet( ){
 
 };
 
-exports.watchFile = function watchFile( ){
+watchFile = function watchFile( ){
 
 };
 
-exports.boot = function boot( ){
-	if( "cloneFile" in global ){
-		return;
-	}
-
-	var cloneFile = function cloneFile( source, destination ){
+cloneFile = function cloneFile( source, destination ){
 
 
-
-	};
-
-	global.contaminated = true;
-	global.cloneFile = cloneFile;
-
-	exports.isGlobal = true
-	exports.cloneFile = cloneFile;
 };

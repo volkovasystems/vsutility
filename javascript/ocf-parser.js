@@ -3,7 +3,9 @@
 		{
 			"fs": "fs",
 			"check-if-empty": "checkIfEmpty",
-			"class-path": "Path"
+			"class-path": "Path",
+			"subset": "subset",
+			"class-range": "Range"
 		}
 	@end-include
 
@@ -26,7 +28,8 @@ parseCommands = function parseCommands( fileContents, callback ){
 			Add multiple command set parsing.
 			Add multiple commands per set parsing.		
 	*/
-	var parsedCommands = _.rest( fileContents.match( commandFormat ) || [ ] );
+	var extractedCommands = fileContents.match( commandFormat ) || [ ];
+	var parsedCommands = subset( extractedCommands, Range( 1, "N" ) );
 	if( checkIfEmpty( parsedCommands ) ){
 		return callback( null, null );
 	}else{
