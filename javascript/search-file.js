@@ -27,23 +27,19 @@
 */
 
 searchFile = function searchFile( fileName, filePath, depth, callback ){
-	if( !callback ){
-		callback = function callback( ){ };
-	}
+	/*:
+		@meta-configuration:
+			{
+				"fileName:required": "string~file",
+				"file:optional": "File!fileName&filePath"
+				"filePath:optional": "Path|string",
+				"depth:optional": "number",
+				"callback:required": "Callback"
+			}
+		@end-meta-configuration
+	*/
 
-	if( !fileName ){
-		var error = new Error( "invalid file name" );
-		callback( error );
-		return;
-	}
-
-	if( !filePath ){
-		var error = new Error( "invalid file path" );
-		callback( error );
-		return;
-	}
-
-	if( !depth ){
+	if( parameter.depth.isNotExisting( ) ){
 		depth = 5;
 	}
 
