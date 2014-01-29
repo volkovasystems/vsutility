@@ -1,24 +1,11 @@
 /*:
-*/
+	@include:
+		{
+			"set-intersection": "setIntersection"
+		}
+	@end-include
 
-exports.addFlavor = function addFlavor( flavorName, flavorEngine ){
-
-};
-
-exports.removeFlavor = function removeFlavor( flavorName ){
-
-};
-
-/*
-	This is basically a decorator for all modules
-		following extensible modules.
-*/
-exports.boot = function boot( ){
-	if( "syrup" in global ){
-		return;
-	}
-
-	/*
+	@module-documentation:
 		The gateway will be the exports variable and
 			the subProcedures will be the contents of the module.
 
@@ -37,16 +24,45 @@ exports.boot = function boot( ){
 		They give flavor to the function so by adding flavors and selecting
 			which is to be wrapped then we can add more extensible procedures
 			to the function.
-	*/
-	var syrup = function syrup( gateway, subProcedures, configurations ){
+	@end-module-documentation
+
+	@module-configuration:
+		{
+			"moduleName": "syrup",
+			"authorName": "Richeve S. Bebedor",
+			"isGlobal": true
+		}
+	@end-module-configuration
+
+	@export:
+		{
+			"queryModule": "queryModule"
+		}
+	@end-export
+*/
+
+( function module( dependency ){
+	var errorWrapper = function errorWrapper( ){
 
 	};
 
-	global.contaminated = true;
-	global.syrup = syrup;
+	var metaWrapper = function metaWrapper( ){
 
-	exports.isGlobal = true;
-	exports.syrup = syrup;
+	};
 
-	return exports;
-};
+	var callbackWrapper = function callbackWrapper( ){
+
+	};
+
+	var addFlavor = function addFlavor( flavorName, flavorEngine ){
+
+	};
+
+	var removeFlavor = function removeFlavor( flavorName ){
+
+	};
+
+	var syrup = function syrup( method ){
+
+	};
+} )( dependency );

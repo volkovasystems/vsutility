@@ -1,9 +1,9 @@
 /*:
 	@include:
 		{
-			"fs": "fs",
 			"check-if-empty": "checkIfEmpty",
 			"class-path": "Path",
+			"class-file": "File",
 			"subset": "subset",
 			"class-range": "Range"
 		}

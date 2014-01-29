@@ -10,7 +10,7 @@
 
 	@module-configuration:
 		{
-			"moduleName": "arrayIntersection",
+			"moduleName": "collectionIntersection",
 			"authorName": "Richeve S. Bebedor",
 			"isGlobal": true
 		}
@@ -23,7 +23,7 @@
 */
 
 
-arrayIntersection = function arrayIntersection( setA, setB ){
+collectionIntersection = function collectionIntersection( setA, setB ){
 	/*:
 		@meta-configuration:
 			{

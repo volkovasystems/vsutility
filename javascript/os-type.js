@@ -1,60 +1,61 @@
 /*:
-	@require:
+	@include:
 		{
 			"os": "os"
 		}
-	@end-require
-*/
-var os = require( "os" );
+	@end-include
 
-exports.boot = function boot( ){
-	if( "osType" in global ){
-		return;
-	}
+	@module-documentation:
 
-	var osType = function osType( ){
-		var type = os.type( ).toLowerCase( );
-		var isWindows = false;
-		var isLinux = false;
-		var isMac = false;
-		/*
-			This will be extended for other os architectures.
-		*/
-		if( ( /windows/ ).test( type ) ){
-			type = "windows";
-			isWindows = true;
-		}else if( ( /linux/ ).test( type ) ){
-			type = "linux";
-			isLinux = true;
-		}else if( ( /osx/ ).test( type ) ){
-			type = "mac";
-			isMac = true;
+	@end-module-documentation
+
+	@module-configuration:
+		{
+			"moduleName": "hyperCut",
+			"authorName": "Richeve S. Bebedor",
+			"isGlobal": true
 		}
-		//...s
+	@end-module-configuration
 
-		var osTypeFactory = {
-			"toString": function toString( ){
-				return type;
-			},
-			"isWindows": function isWindows( ){
-				return isWindows;
-			},
-			"isLinux": function isLinux( ){
-				return isLinux;
-			},
-			"isMac": function isMac( ){
-				return isMac;
-			}
-		};
+	@export:
+		{
+		}
+	@end-export
+*/
+osType = function osType( ){
+	var type = os.type( ).toLowerCase( );
+	var isWindows = false;
+	var isLinux = false;
+	var isMac = false;
+	/*
+		This will be extended for other os architectures.
+	*/
+	if( ( /windows/ ).test( type ) ){
+		type = "windows";
+		isWindows = true;
+	}else if( ( /linux/ ).test( type ) ){
+		type = "linux";
+		isLinux = true;
+	}else if( ( /osx/ ).test( type ) ){
+		type = "mac";
+		isMac = true;
+	}
+	//...s
 
-		return osTypeFactory;
+	var osTypeFactory = {
+		"toString": function toString( ){
+			return type;
+		},
+		"isWindows": function isWindows( ){
+			return isWindows;
+		},
+		"isLinux": function isLinux( ){
+			return isLinux;
+		},
+		"isMac": function isMac( ){
+			return isMac;
+		}
 	};
 
-	global.contaminated = true;
-	global.osType = osType;
-
-	exports.isGlobal = true;
-	exports.osType = osType;
-
-	return exports;
+	return osTypeFactory;
 };
