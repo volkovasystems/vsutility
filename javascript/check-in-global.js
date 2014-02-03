@@ -1,16 +1,32 @@
+/*:
+	@module-configuration:
+		{
+			"fileName": "check-in-global.js",
+			"moduleName": "checkInGlobal",
+			"authorName": "Richeve S. Bebedor",
+			"isGlobal": true
+		}
+	@end-module-configuration
+
+	@module-documentation:
+	@end-module-documentation
+
+	@include:
+		{
+		}
+	@end-include
+*/
 checkInGlobal = function checkInGlobal( variable ){
-	if( typeof variable != "string" ){
-		var error = new Error( "cannot evaluate non-string parameter" );
-		console.log( error );
-		throw error;
-	}
-
-	if( !( /^[\w\$_][\w\d\$_]+$/ ).test( variable ) ){
-		var error = new Error( "invalid variable string" );
-		console.log( error );
-		throw error;
-	}
-
+	/*:
+		@meta-configuration:
+			{
+				"variable:required": "string;checkFormat",
+				";checkFormat": function checkFormat( variable ){
+					return !( /^[\w\$_][\w\d\$_]+$/ ).test( variable );
+				}
+			}
+		@end-meta-configuration
+	*/
 	try{
 		eval( variable + ";" );
 	}catch( error ){

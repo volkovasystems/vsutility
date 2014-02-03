@@ -47,9 +47,9 @@ searchFile = function searchFile( fileName, filePath, depth, callback ){
 		function( error, fileStatistic ){
 			if( error ){
 				console.log( error );
-				callback( error )
+				callback( error );
 			}else if( fileStatistic.isDirectory( ) ){
-				filePath += ( new Array( depth + 1 )).join( "../" );
+				filePath += ( new Array( depth + 1 ) ).join( "../" );
 
 				var searchCallback = function searchCallback( error, state, output ){
 					if( error ){

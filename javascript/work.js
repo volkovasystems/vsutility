@@ -1,23 +1,36 @@
 /*:
-*/
-/*
-	This work function is a simple command execution engine
+	@module-configuration:
+		{
+			"fileName": "work.js",
+			"moduleName": "work",
+			"authorName": "Richeve S. Bebedor",
+			"isGlobal": true
+		}
+	@end-module-configuration
+
+	@module-documentation:
+		This work function is a simple command execution engine
 		with the following features:
-		1. execute command
-		2. return on error
-		3. listen to output stream
+			1. execute command
+			2. return on error
+			3. listen to output stream
+	@end-module-documentation
+
+	@include:
+		{
+			"child_process": "childprocess"
+		}
+	@end-include
 */
 work = function work( command, callback ){
-	if( !callback ){
-		callback = function callback( ){ };
-	}
-
-	if( !command || typeof command != "string" ){
-		var error = new Error( "invalid command" );
-		callback( error );
-		return;
-	}
-	
+	/*:
+		@meta-configuration:
+			{
+				"command:required": "string",
+				"callback:optional": "Callback"
+			}
+		@end-meta-configuration
+	*/
 	var task = childprocess.exec( command );
 	var error = "";
 	var output = "";
