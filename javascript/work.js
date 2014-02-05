@@ -36,7 +36,7 @@ work = function work( command, callback ){
 	var output = "";
 	task.stdout.on( "data",
 		function( data ){
-			output += data.toString( ).replace( /^\s+|\s+$/g, "" );
+			output += data.toString( );
 		} );
 	task.stderr.on( "data",
 		function( data ){

@@ -3,7 +3,8 @@
 		{
 			"os-type": "osType",
 			"class-path": "Path",
-			"work": "work"
+			"class-command": "Command",
+			"check-if-not-empty": "checkIfNotEmpty"
 		}
 	@end-include
 
@@ -20,16 +21,17 @@
 		}
 	@end-module-configuration
 */
-scanAllDirectory = function scanAllDirectory( origin, callback ){
+scanAllDirectory = function scanAllDirectory( origin, depth, callback ){
 	/*:
 		@meta-configuration:
 			{
-				"origin:optional": "Path|string",
+				"origin:optional": "Path|string~depth",
+				"depth:optional": "number",
 				"callback:optional": "Callback"	
 			}
 		@end-meta-configuration
 	*/
-	var command = "";
+	var command = null;
 
 	if( self.origin.isExisting( ) ){
 		if( self.origin.isString( ) ){
@@ -42,19 +44,25 @@ scanAllDirectory = function scanAllDirectory( origin, callback ){
 				}
 			} );
 		}else{
-			command = "cd " + path.getLocation( ) + " && ";
+			command = Command( "cd " + path.getLocation( ) );
 		}
+	}else{
+		command = Command( "cd ." );
 	}
-
-	
 
 	if( osType( ).isWindows( ) ){
-		command += "";
+		command.append( "find ." );
 	}else{
-		command += "dir /b /s /ad";
+		command.append( "dir /b /s/ /ad" );
 	}
-	work( command,
-		function( ){
+	return command.executeWork( function callback( error, results ){
+		if( error ){
+			return callback( error );
+		}else if( checkIfNotEmpty( results ) ){
+			//We will have to separate the results and return as a collection
 
-		} );
+		}else{
+			return callback( null, null );
+		}
+	} );
 };
