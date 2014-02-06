@@ -21,8 +21,6 @@
 		}
 	@end-export
 */
-
-
 collectionDifference = function collectionDifference( setA, setB ){
 	/*:
 		@meta-configuration:
@@ -36,7 +34,7 @@ collectionDifference = function collectionDifference( setA, setB ){
 		&& parameter.setB.isArray )
 	{
 		for( var index = 0; index < setA.length; index++ ){
-			
+        
 		}
 
 	}else if( parameter.setA.isObject( )

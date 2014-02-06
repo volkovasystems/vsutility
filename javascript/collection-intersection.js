@@ -35,7 +35,7 @@ collectionIntersection = function collectionIntersection( setA, setB ){
 	if( self.setA.isArray( )
 		&& self.setB.isArray )
 	{
-
+		
 	}else if( self.setA.isObject( )
 		&& self.setB.isObject( ) )
 	{
