@@ -4,6 +4,7 @@
 			"class-keys": "Keys"
 		}
 	@end-include
+    
 	@module-configuration:
 		{
 			"moduleName": "checkIfEmpty",
