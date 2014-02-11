@@ -1,0 +1,5 @@
+
+
+collectionMap = function collectionMap( ){
+
+};
