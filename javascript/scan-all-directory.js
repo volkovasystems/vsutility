@@ -51,9 +51,9 @@ scanAllDirectory = function scanAllDirectory( origin, depth, callback ){
 	}
 
 	if( osType( ).isWindows( ) ){
-		command.append( "find ." );
+		command.append( "dir /b /s /ad" );
 	}else{
-		command.append( "dir /b /s/ /ad" );
+		command.append( "find ." );
 	}
 	return command.executeWork( function callback( error, results ){
 		if( error ){
